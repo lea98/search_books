@@ -38,7 +38,7 @@ def znanje(task_cont, task_title):
         lista.append({'price':i.text.replace("\n","").strip().split('   ')[0],
                       'author':j.findChildren("a")[0].text.replace("\n","").strip().split(', ')
                       ,'title':k.findChildren("span")[0].text.strip(),
-                      'link': f"https://znanje.hr{k.findChildren('a')[0]['href']}",
+                      'link': f"{k.findChildren('a')[0]['href']}",
                       'page': 2})
     return lista
 

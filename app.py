@@ -409,19 +409,19 @@ WHERE b.title LIKE '{task_title}%');""")
 
 def live_scraping(task_author, task_title):
     new_lista=[]
-    znanje_list = znanje(task_title, task_author)
-    znanje_list = match_author(znanje_list, task_author, task_title)
-    if znanje_list:
-        for item in znanje_list:
-            item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'znanje.jpg')
+    # znanje_list = znanje(task_title, task_author)
+    # znanje_list = match_author(znanje_list, task_author, task_title)
+    # if znanje_list:
+    #     for item in znanje_list:
+    #         item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'znanje.jpg')
     #
-    # knjiga_list = knjiga(task_title, task_author)
-    # knjiga_list = match_author(knjiga_list, task_author, task_title)
-    # if knjiga_list:
-    #     for item in knjiga_list:
-    #         item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'knjiga.png')
+    knjiga_list = knjiga(task_title, task_author)
+    knjiga_list = match_author(knjiga_list, task_author, task_title)
+    if knjiga_list:
+        for item in knjiga_list:
+            item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'knjiga.png')
 
-    new_lista =  znanje_list
+    new_lista =  knjiga_list
     #new_lista =[{'price': '88,00 kn', 'author': ['Ivan Kušan'], 'title': 'Ljubav ili smrt', 'link': 'https://znanje.hr/product/ljubav-ili-smrt/201846', 'page': 2, 'page_logo': 'static\\logos\\znanje.jpg'},  {'price':'35,00 kn', 'author': ['Ivan Kušan'], 'title': 'Koko i duhovi', 'link': 'https://knjiga.hr/koko-i-duhovi-ivan-kusan-1-5', 'page': 5, 'page_logo': 'static\\logos\\knjiga.png'}]
     @after_this_request
     def save_to_db_after_scraping(response):

@@ -3,14 +3,21 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 import time
+import  os
 
 # --| Setup
+
+
 def knjiga(task_cont, task_title):
     options = Options()
     options.add_argument("--headless")
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36")
-    driver_path = r"C:\Users\LeaBratić\Desktop\chromedriver.exe"
-    browser = webdriver.Chrome(driver_path, options=options)
+    #driver_path = r"C:\Users\LeaBratić\Desktop\chromedriver.exe"
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
+    browser = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=options)
     browser.minimize_window()
     # --| Parse or automation
     if task_cont and task_title:
