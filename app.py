@@ -117,8 +117,9 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(30))
     ogl = db.relationship('Oglasi',backref =db.backref('ogl_user'))
 
-# db.create_all()
-# db.session.commit()
+
+db.create_all()
+db.session.commit()
 
 # if not (db.session.execute("select count(*) from pages").first())[0]:
 #     page1 = Pages(id=1, link="https://www.barnesandnoble.com/", name="Barnes & Noble", image="barnesandnoble.jpg")
