@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1>Book Scraper</h1>
+
+<div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+            <form action="{{ url_for('handle_data') }}" method="post" class="justify-content-center">
+                <input type="text" name="author" id="author" placeholder="Author name" value={{author_name}}>
+                <input type="text" name="title" id="title" placeholder="Book title" value={{book_title}}>
+
+                <input type="submit" name="submit_button" value="Check DB" class="btn btn-dark btn-md">
+               {% if show_button %} <input type="submit" name="submit_button" value="Scrape" class="btn btn-dark btn-md">{% endif %}
+
+            </form>
+        </div>
+            <br>
+        <br>
+    <div>
+        {% if not lista %}
+        <div style="text-align:center;">
+            Sorry, no results... {% if show_button %}Try scrape button{% endif %} <br><br>
+
+        </div>
+
+        {% else %}
+
+<div class="col-xl-10 col-lg-11 col-md-13 col-sm-15 mx-auto text-center">
+
+        <table class=" table justify-content-center">
+            <thead>
+            <tr>
+                <th>Price</th>
+                <th>Author</th>
+                <th>Title</th>
+                <th>Go to</th>
+                <th>Source</th>
+                <th>Logo</th>
+
+
+            </tr></thead>
+            <tbody>
+
+            {% for task in lista %}
+
+            <tr>
+                {% for key, value in task.items() %}
+                {% if key == 'link' %}
+                <td><a target="_blank" href={{ value }}>Check</a></td>
+                {% elif key == 'page' %}
+                <td><a target="_blank" href={{ value }}>{{ value }}</a></td>
+                {% elif key == 'page_logo' %}
+                <td> <img class="logo" src="{{ value }}" alt=""></td>
+                {% else %}
+                <td>{{ value }}</td>
+                {% endif %}
+                {% endfor %}
+
+
+            </tr></tbody>
+            {% endfor %}
+            {% endif %}
+
+
+        </table>
+
+    </div>
+</div>
+    </div>
+
+{% endblock %}

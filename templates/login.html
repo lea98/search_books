@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+  <h1>Login</h1>
+<div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+  <form method="POST" action="/login" class="justify-content-center loginforms">
+    {{ form.hidden_tag() }}
+      {{ wtf.form_field(form.username) }}
+
+      {{ wtf.form_field(form.password) }}
+    <div class="text-right"><button type="submit" class="btn btn-dark">Login</button></div>
+  </form>
+</div>
+{% if invalid_pass%}
+  <div>
+    Invalid username or password
+  </div>
+{% endif %}
+
+{% endblock %}

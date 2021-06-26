@@ -1,0 +1,95 @@
+body {
+text-align: -webkit-center;
+font-family : "Courier", monospace;
+}
+.table {
+  border-collapse: collapse;
+  border: 1px solid black;
+
+
+}
+h1{
+font-size: 50px;
+text-align:center;
+margin-top:1em !important;
+margin-bottom:0.5em !important;
+
+}
+
+h2{
+text-align:center;
+margin-top:1em !important;
+margin-bottom:0.5em !important;
+
+}
+h4{
+text-align:center;
+margin-top:2em !important;
+
+}
+td{
+padding: 10px;
+}
+
+tbody tr{
+  border: 0.2px solid black;
+  background: #ededf2
+}
+
+thead{
+height:50px;
+background:#a6a49f;
+}
+
+.logo{
+height:35px;
+width:35px;
+}
+
+.uploadedimg{
+height:50px;
+width:50px;
+}
+
+
+.loginforms:before {
+    content: '';
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0,0,0,0.3);
+    z-index: -1;
+    border-radius: 10px;
+}
+
+
+.imginform input{
+text-align-last:right;
+}
+
+
+.wrapimages{
+
+}
+.leftimg{
+  border-radius: 10%;
+  height:30%;
+    width:30%;
+    float:left;
+    margin-left: 10%;
+    margin-top: 10%;
+
+
+}
+.rightimg{
+  border-radius: 10%;
+    height:30%;
+
+  width:30%;
+float:right;
+margin-right: 10%;
+    margin-top: 10%;
+
+}

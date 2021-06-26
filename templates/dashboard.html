@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+  <h1> Welcome {{current_user.username}}</h1>
+
+
+<h2>Add new ad</h2>
+<div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+
+  <form method="POST" action="/add_oglas" enctype="multipart/form-data" class="justify-content-center loginforms">
+    {{ form.hidden_tag() }}
+      {{ wtf.form_field(form.title) }}
+
+      {{ wtf.form_field(form.body) }}
+    <div class="imginform">
+    {{ wtf.form_field(form.img_url) }}</div>
+      {{ wtf.form_field(form.price) }}
+
+    <div class="text-right"><button  type="submit"  class="btn btn-dark" value="Dodaj oglas">Add new</button></div>
+  </form>
+</div>
+
+  <br><br><br>
+    {% if oglasi_list%}
+
+  <div class="col-xl-10 col-lg-11 col-md-13 col-sm-15 mx-auto text-center">
+  <table class="table table-striped justify-content-center"><thead>
+    <tr>
+      <th>Title</th>
+      <th>Price</th>
+      <th>Text</th>
+      <th>Image</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+    </tr></thead>
+    {% for oglas in oglasi_list %}
+      <tr>
+        <td>{{oglas.title}}</td>
+        <td>{{oglas.price}}</td>
+        <td>{{oglas.body}}</td>
+        <td><img class="uploadedimg" src="static/uploads/{{oglas.img_url}}" /></td>
+        <td>{{oglas.date_created}}</td>
+        <td>
+          <form action="{{url_for('edit_oglas', id=oglas.id)}}" method="GET">
+            <input type="submit" value="Edit" class="btn btn-dark">
+          </form>
+
+        </td>
+        <td>
+          <form action="{{url_for('delete_oglas', id=oglas.id)}}" method="POST">
+              {{ form.hidden_tag() }}
+            <input type="submit" value="Delete" class="btn btn-dark">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+
+
+  </table>
+    </div>
+        {%endif%}
+
+{% endblock %}

@@ -13,13 +13,16 @@ from flask_wtf.file import FileRequired
 from sqlalchemy import desc
 from werkzeug.utils import secure_filename
 
-
+from beautifulsoup_bookstores.znanje import znanje
+# from bookstores.eurospanbookstore import eurospanbookstore
+from helpers.general import match_author
+from selenium_bookstores.knjiga import knjiga
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, TextAreaField, FileField, MultipleFileField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-# import email_validator
+import email_validator
 from flask_bootstrap import Bootstrap
 from functools import wraps
 from flask_uploads import configure_uploads, IMAGES, UploadSet #https://stackoverflow.com/questions/61628503/flask-uploads-importerror-cannot-import-name-secure-filename
@@ -31,7 +34,7 @@ app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = 'topsecret'
 bootstrap = Bootstrap(app)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test3.db'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///test3.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///offers.db'
 
 SQLALCHEMY_BINDS = {
     'oglasnik': 'sqlite:///oglasnik.db',

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+
+<h1><small> Edit </small></h1>
+  <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center">
+
+<table class="table table-striped justify-content-center">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Text</th>
+        <th>Image</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tr>
+        <td>{{oglas.title}}</td>
+        <td>{{oglas.price}}</td>
+        <td>{{oglas.body}}</td>
+        <td><img class="uploadedimg" src="{{ url_for('static', filename='uploads/' + oglas.img_url) }}"/></td>
+        <td>{{oglas.date_created}}</td>
+</table>
+  </div>
+<br><br>
+<div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+
+<form method="POST" action="{{url_for('edit_oglas', id=oglas.id)}}" enctype="multipart/form-data" class="justify-content-center loginforms">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.title) }}
+    {{ wtf.form_field(form.body) }}
+        <div class="imginform">
+
+            {{ wtf.form_field(form.img_url) }}</div>
+    {{ wtf.form_field(form.price) }}
+    <div class="text-right">
+
+            <button  class="btn btn-dark" type="submit" value="Edit oglas">Edit</button>
+
+    </div>
+</form>
+</div>
+{% endblock %}
