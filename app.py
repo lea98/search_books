@@ -31,7 +31,7 @@ LOGOS_FOLDER = os.path.join('static', 'logos')
 UPLOADS_FOLDER =  os.path.join('static', 'uploads')
 
 app = Flask(__name__)  # setup app, name referencing this file
-app.config['SECRET_KEY'] = 'topsecret'
+app.config['SECRET_KEY'] = 'd64938c6ccdb42fcafaa7ff467f309bd'
 bootstrap = Bootstrap(app)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test3.db'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///offers.db'
