@@ -2,8 +2,10 @@ import copy
 import os
 import time
 
+import click
 import flask
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session, after_this_request
+from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import json
@@ -467,6 +469,12 @@ def check_if_exists_in_table(item):
             return book_id[0]
 
     return False
+
+
+@click.command(name='create_tables')
+@with_appcontext
+def create_tables():
+    db.create_all()
 
 if __name__ == "__main__":
     app.run(debug=True)
