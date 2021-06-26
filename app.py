@@ -409,50 +409,46 @@ WHERE b.title LIKE '{task_title}%');""")
 
 def live_scraping(task_author, task_title):
     new_lista=[]
-    # znanje_list = znanje(task_title, task_author)
-    # znanje_list = match_author(znanje_list, task_author, task_title)
-    # print(znanje_list)
-    # if znanje_list:
-    #     for item in znanje_list:
-    #         item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'znanje.jpg')
+    znanje_list = znanje(task_title, task_author)
+    znanje_list = match_author(znanje_list, task_author, task_title)
+    if znanje_list:
+        for item in znanje_list:
+            item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'znanje.jpg')
     #
     # knjiga_list = knjiga(task_title, task_author)
     # knjiga_list = match_author(knjiga_list, task_author, task_title)
     # if knjiga_list:
     #     for item in knjiga_list:
     #         item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'knjiga.png')
-    #
-    # new_lista =  znanje_list + knjiga_list
-    print('LIVE scrr')
+
+    new_lista =  znanje_list
     #new_lista =[{'price': '88,00 kn', 'author': ['Ivan Kušan'], 'title': 'Ljubav ili smrt', 'link': 'https://znanje.hr/product/ljubav-ili-smrt/201846', 'page': 2, 'page_logo': 'static\\logos\\znanje.jpg'},  {'price':'35,00 kn', 'author': ['Ivan Kušan'], 'title': 'Koko i duhovi', 'link': 'https://knjiga.hr/koko-i-duhovi-ivan-kusan-1-5', 'page': 5, 'page_logo': 'static\\logos\\knjiga.png'}]
     @after_this_request
     def save_to_db_after_scraping(response):
         for item in new_lista:
             exists_in = check_if_exists_in_table(item)
+            titles = item['title'].replace("'", '"')
             if not exists_in:
-                db.session.execute(f"""insert into books values (null,"{item['title']}")""")
-                book_id = db.session.execute("SELECT LAST_INSERT_ROWID()")
-                book_id_num = list(book_id)[0][0]
+                book_id = db.session.execute(f"""insert into books values (DEFAULT,'{titles}') RETURNING id;""")
+                book_id_num = book_id.first()[0]
                 for auth in item['author']:
-                    print(auth)
-                    db.session.execute(f'''INSERT INTO authors (name)
-                                    SELECT "{auth}"
-                                    FROM authors
-                                    WHERE NOT EXISTS (SELECT id FROM authors WHERE name="{auth}")
-                                    LIMIT 1;
-                                    ''')
-                    auth_is_there_list = db.session.execute(f'''select id from authors where name="{auth}"''')
-                    auth_id_num = auth_is_there_list.fetchone()[0]
-
-                    db.session.execute(f"""insert into book_authors values ({book_id_num},{auth_id_num})""")
+                    auth_is_there_list = db.session.execute(
+                        f"""select id from authors where name = '{auth}';""").fetchone()
+                    if not auth_is_there_list:
+                        auth_id_num = \
+                        db.session.execute(f"""insert into authors values (DEFAULT,'{auth}') RETURNING id;""").first()[0]
+                    else:
+                        auth_id_num = auth_is_there_list[0]
+                    print(auth_id_num)
+                    db.session.execute(f"""insert into book_authors values ({book_id_num},{auth_id_num});""")
             else:
                 book_id_num = exists_in
 
-
             db.session.execute(f"""INSERT INTO offers (link,price,book_id,pages_id,date_added)
-                    VALUES ("{item['link']}","{item['price']}",{book_id_num},"{item['page']}","{datetime.utcnow()}")
-                    ON CONFLICT(link) DO UPDATE SET price = ("{item['price']}"),date_added=("{datetime.utcnow()}");""")
-            #db.session.commit()
+                    VALUES ('{item['link']}','{item['price']}',{book_id_num},{item['page']},'{item['date_added']}')
+                    ON CONFLICT (link) DO UPDATE SET (price, date_added) = ('{item['price']}','{datetime.utcnow()}');""")
+
+            db.session.commit()
         return response
 
     return new_lista
