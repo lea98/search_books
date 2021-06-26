@@ -118,7 +118,7 @@ class Users(db.Model, UserMixin):
     name = db.Column(db.String(30))
     email = db.Column(db.String(30))
     username = db.Column(db.String(30))
-    password = db.Column(db.String(30))
+    password = db.Column(db.String(120))
     ogl = db.relationship('Oglasi',backref =db.backref('ogl_user'))
 
 
@@ -365,7 +365,7 @@ def check_database(task_author, task_title):
         FROM books b
         JOIN book_authors ba ON b.id = ba.book_id
         JOIN authors a ON ba.author_id = a.id
-        WHERE a.name LIKE "%{task_author}%" AND b.title LIKE "{task_title}%");""")
+        WHERE a.name LIKE "%{task_author}%" AND b.title LIKE '{task_title}%');""")
 
     if not task_title and not task_author:
         pass
@@ -377,7 +377,7 @@ def check_database(task_author, task_title):
 FROM books b
 JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
-WHERE a.name LIKE "%{task_author}%");""")
+WHERE a.name LIKE '%{task_author}%');""")
 
     elif not task_author:
         result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id
@@ -386,7 +386,7 @@ WHERE a.name LIKE "%{task_author}%");""")
 FROM books b
 JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
-WHERE b.title LIKE "{task_title}%");""")
+WHERE b.title LIKE '{task_title}%');""")
 
     if result:
         offers = result.mappings().all()
