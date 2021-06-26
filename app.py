@@ -34,8 +34,10 @@ app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = 'd64938c6ccdb42fcafaa7ff467f309bd'
 bootstrap = Bootstrap(app)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test3.db'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///bookoffers.db'
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///bookoffers.db'
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
+SQLALCHEMY_DATABASE_URI = DATABASE_URL
 SQLALCHEMY_BINDS = {
     'oglasnik': 'sqlite:///oglasnik.db',
 }
@@ -118,8 +120,8 @@ class Users(db.Model, UserMixin):
     ogl = db.relationship('Oglasi',backref =db.backref('ogl_user'))
 
 
-db.create_all()
-db.session.commit()
+# db.create_all()
+# db.session.commit()
 
 # if not (db.session.execute("select count(*) from pages").first())[0]:
 #     page1 = Pages(id=1, link="https://www.barnesandnoble.com/", name="Barnes & Noble", image="barnesandnoble.jpg")
