@@ -29,7 +29,7 @@ def knjiga(task_cont, task_title):
     url = f"https://knjiga.hr/?s={to_url}&post_type=product"
     browser.get(url)
     browser.implicitly_wait(5)
-    soup = BeautifulSoup(browser.page_source, 'html.parse')
+    soup = BeautifulSoup(browser.page_source, 'lxml')
     price = soup.findAll('span', attrs={'class','woocommerce-Price-amount amount'})
     title_meta = soup.findAll('h2', attrs={'class','woocommerce-loop-product__title'})
     authors_meta = soup.findAll('div', attrs={'class','author'})
