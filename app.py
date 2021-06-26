@@ -34,10 +34,10 @@ app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = 'd64938c6ccdb42fcafaa7ff467f309bd'
 bootstrap = Bootstrap(app)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test3.db'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///offers.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///bookoffers2.db'
 
 SQLALCHEMY_BINDS = {
-    'oglasnik': 'sqlite:///oglasnik.db',
+    'oglasnik': 'sqlite:///oglasnik2.db',
 }
 
 app.config['UPLOAD_FOLDER'] = LOGOS_FOLDER
@@ -116,6 +116,23 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(30))
     password = db.Column(db.String(30))
     ogl = db.relationship('Oglasi',backref =db.backref('ogl_user'))
+
+db.create_all()
+db.session.commit()
+
+if not (db.session.execute("select count(*) from pages").first())[0]:
+    page1 = Pages(id=1, link="https://www.barnesandnoble.com/", name="Barnes & Noble", image="barnesandnoble.jpg")
+    page2 = Pages(id=2, link="https://znanje.hr/", name="Znanje", image="znanje.jpg")
+    page3 = Pages(id=3, link="https://mozaik-knjiga.hr/", name="Mozaik Knjiga", image="mozaik.jpg")
+    page4 = Pages(id=4, link="https://www.ljevak.hr/", name="Ljevak", image="ljevak.jpg")
+    page5 = Pages(id=5, link="https://knjiga.hr/", name="Knjiga", image="knjiga.jpg")
+    db.session.add(page1)
+    db.session.add(page2)
+    db.session.add(page3)
+    db.session.add(page4)
+    db.session.add(page5)
+    db.session.commit()
+
 
 @app.route('/', methods=['GET','POST'])
 def index():
