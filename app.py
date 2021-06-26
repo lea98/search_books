@@ -445,7 +445,7 @@ def live_scraping(task_author, task_title):
                 book_id_num = exists_in
 
             db.session.execute(f"""INSERT INTO offers (link,price,book_id,pages_id,date_added)
-                    VALUES ('{item['link']}','{item['price']}',{book_id_num},{item['page']},'{item['date_added']}')
+                    VALUES ('{item['link']}','{item['price']}',{book_id_num},{item['page']},'{datetime.utcnow()}')
                     ON CONFLICT (link) DO UPDATE SET (price, date_added) = ('{item['price']}','{datetime.utcnow()}');""")
 
             db.session.commit()
