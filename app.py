@@ -36,12 +36,12 @@ app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = 'd64938c6ccdb42fcafaa7ff467f309bd'
 bootstrap = Bootstrap(app)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test3.db'
-#SQLALCHEMY_DATABASE_URI = 'sqlite:///bookoffers.db'
-DATABASE_URL = os.environ.get('DATABASE_URL')
+SQLALCHEMY_DATABASE_URI = 'postgresql://gcxuwyueeneoir:80548384a968ac1aa1ec2d9f130377acbf66bdad629710b82520660091304ca0@ec2-54-73-68-39.eu-west-1.compute.amazonaws.com:5432/d2a4rk92i3odau'
+#DATABASE_URL = os.environ.get('DATABASE_URL')
 
-SQLALCHEMY_DATABASE_URI = DATABASE_URL
+#SQLALCHEMY_DATABASE_URI = DATABASE_URL
 SQLALCHEMY_BINDS = {
-    'oglasnik': 'sqlite:///oglasnik.db',
+    'oglasnik': 'postgresql://okmpaacdfmhebo:0cc7666e2657df23b376842b721ed56cb4e4a548da5711038c74d7a4ca18e86b@ec2-34-254-69-72.eu-west-1.compute.amazonaws.com:5432/d5cjljr3skt7rm',
 }
 
 app.config['UPLOAD_FOLDER'] = LOGOS_FOLDER
@@ -122,21 +122,21 @@ class Users(db.Model, UserMixin):
     ogl = db.relationship('Oglasi',backref =db.backref('ogl_user'))
 
 
-# db.create_all()
-# db.session.commit()
+db.create_all()
+db.session.commit()
 
-# if not (db.session.execute("select count(*) from pages").first())[0]:
-#     page1 = Pages(id=1, link="https://www.barnesandnoble.com/", name="Barnes & Noble", image="barnesandnoble.jpg")
-#     page2 = Pages(id=2, link="https://znanje.hr/", name="Znanje", image="znanje.jpg")
-#     page3 = Pages(id=3, link="https://mozaik-knjiga.hr/", name="Mozaik Knjiga", image="mozaik.jpg")
-#     page4 = Pages(id=4, link="https://www.ljevak.hr/", name="Ljevak", image="ljevak.jpg")
-#     page5 = Pages(id=5, link="https://knjiga.hr/", name="Knjiga", image="knjiga.jpg")
-#     db.session.add(page1)
-#     db.session.add(page2)
-#     db.session.add(page3)
-#     db.session.add(page4)
-#     db.session.add(page5)
-#     db.session.commit()
+if not (db.session.execute("select count(*) from pages").first())[0]:
+    page1 = Pages(id=1, link="https://www.barnesandnoble.com/", name="Barnes & Noble", image="barnesandnoble.jpg")
+    page2 = Pages(id=2, link="https://znanje.hr/", name="Znanje", image="znanje.jpg")
+    page3 = Pages(id=3, link="https://mozaik-knjiga.hr/", name="Mozaik Knjiga", image="mozaik.jpg")
+    page4 = Pages(id=4, link="https://www.ljevak.hr/", name="Ljevak", image="ljevak.jpg")
+    page5 = Pages(id=5, link="https://knjiga.hr/", name="Knjiga", image="knjiga.jpg")
+    db.session.add(page1)
+    db.session.add(page2)
+    db.session.add(page3)
+    db.session.add(page4)
+    db.session.add(page5)
+    db.session.commit()
 
 
 @app.route('/', methods=['GET','POST'])
@@ -471,10 +471,7 @@ def check_if_exists_in_table(item):
     return False
 
 
-@click.command(name='create_tables')
-@with_appcontext
-def create_tables():
-    db.create_all()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
