@@ -70,7 +70,7 @@ def mozaik(task_cont, task_title):
             {'price': get_currency(one_book),
                               'author':get_authors(one_book, index+1),
                               'title': one_book.find_element_by_xpath(".//div[@class='title']//a").get_attribute('title'),
-                              'link': one_book.find_element_by_xpath(".//div[@class='title']//a").get_attribute('href').split('https://mozaik-knjiga.hr/')[1],
+                              'link': one_book.find_element_by_xpath(".//div[@class='title']//a").get_attribute('href'),
                               'page':3
         }
 

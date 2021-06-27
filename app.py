@@ -37,7 +37,7 @@ UPLOADS_FOLDER =  os.path.join('static', 'uploads')
 app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 bootstrap = Bootstrap(app)
-# LOCAL TESTING
+#LOCAL TESTING
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookoffers.db'
 # SQLALCHEMY_BINDS = {
 #     'oglasnik': "sqlite:///oglasnik.db",
@@ -396,8 +396,9 @@ JOIN authors a ON ba.author_id = a.id
 WHERE b.title LIKE '{task_title}%');""")
     if result:
         offers = result.mappings().all()
-        for offer in offers:
-            if datetime.strptime(offer.date_added.split(' ')[0], '%Y-%m-%d') <= (datetime.now()-timedelta(weeks=1)): # 100 weeks is set for testing
+        for offer in offers: # malo sam zezla s typom kod spremanja
+            check_date =datetime.strptime(offer.date_added.split(' ')[0], '%Y-%m-%d')if isinstance(offer.date_added, str)  else  offer.date_added
+            if check_date <= (datetime.now()-timedelta(weeks=1)): # 100 weeks is set for testing
                 continue
             book_full_name = db.session.query(Books.title).filter(Books.id == offer['book_id']).first()
             authors_for_book = db.session.execute(f"""SELECT authors.name
@@ -457,9 +458,9 @@ def live_scraping(task_author, task_title):
                     db.session.execute(f"""insert into book_authors values ({book_id_num},{auth_id_num});""")
             else:
                 book_id_num = exists_in
-
+            new_link = item['link'].replace('https://mozaik-knjiga.hr/','').replace('https://znanje.hr/','').replace('https://knjiga.hr/','')
             db.session.execute(f"""INSERT INTO offers (link,price,book_id,pages_id,date_added)
-                    VALUES ('{item['link']}','{item['price']}',{book_id_num},{item['page']},'{datetime.utcnow()}')
+                    VALUES ('{new_link}','{item['price']}',{book_id_num},{item['page']},'{datetime.utcnow()}')
                     ON CONFLICT (link) DO UPDATE SET (price, date_added) = ('{item['price']}','{datetime.utcnow()}');""")
 
             db.session.commit()
