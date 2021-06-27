@@ -2,23 +2,23 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block body %}
-  <h1>Register</h1>
+<h1>Register</h1>
 <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
-  <form method="POST" action="/register" class="justify-content-center loginforms">
-    {{ form.hidden_tag() }}
-    {{ wtf.form_field(form.name) }}
+    <form method="POST" action="/register" class="justify-content-center loginforms">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.name) }}
 
-    {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.email) }}
 
-    {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.username) }}
 
-    {{ wtf.form_field(form.password) }}
-   <div class="text-right"> <input type="submit" class="btn btn-dark" value="Register"></div>
-  </form>
-  </div>
+        {{ wtf.form_field(form.password) }}
+        <div class="text-right"><input type="submit" class="btn btn-dark" value="Register"></div>
+    </form>
+</div>
 {% if message%}
-  <div>
+<div>
     {{message}}
-  </div>
+</div>
 {% endif %}
 {% endblock %}

@@ -8,7 +8,7 @@
     {% for oglas in oglasi_list %}
     <div class="col-sm-6">
         <div class="card" style="margin:2em;">
-            <div class="row card-body"  style="background:gainsboro;border:groove;" >
+            <div class="row card-body" style="background:gainsboro;border:groove;">
                 <div class="col-8">
                     <h5 class="card-title">{{oglas.title}}t</h5>
                     <p class="card-text">{{oglas.body}}</p>
@@ -16,14 +16,16 @@
                     <p class="card-text">Added on: {{oglas.date_created}}</p>
 
                 </div>
-                <p class="col-4" >
+                <p class="col-4">
 
-                <a href="static/uploads/{{oglas.img_url}}" target="_blank">
-                <img src="static/uploads/{{oglas.img_url}}" alt="img" style="width:100px;height:100px; position: absolute;top:0;right:0;"/>
-                </a>
+                    <a href="static/uploads/{{oglas.img_url}}" target="_blank">
+                        <img src="static/uploads/{{oglas.img_url}}" alt="img"
+                             style="width:100px;height:100px; position: absolute;top:0;right:0;"/>
+                    </a>
 
                 </p>
-                <a style="position: absolute;bottom:1em;right:0.5em;" href="mailto:{{oglas.email}}" class="btn btn-dark">Send email</a>
+                <a style="position: absolute;bottom:1em;right:0.5em;" href="mailto:{{oglas.email}}"
+                   class="btn btn-dark">Send email</a>
 
             </div>
 
@@ -31,8 +33,8 @@
 
     </div>
 
-        {% endfor %}
-    </div>
+    {% endfor %}
+</div>
 
 
 {% endblock %}
