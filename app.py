@@ -38,9 +38,9 @@ app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 bootstrap = Bootstrap(app)
 # LOCAL TESTING
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookoffers.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookoffers.db'
 # SQLALCHEMY_BINDS = {
-#     'sqlite:///oglasnik': "oglasnik.db",
+#     'oglasnik': "sqlite:///oglasnik.db",
 # }
 
 DATABASE_URL = os.environ.get('DATABASE_URL').replace('postgres','postgresql')
@@ -357,6 +357,7 @@ def handle_data():
             d.update((k, ', '.join(map(str, v))) for k, v in d.items() if k == 'author')
             d.update((k, "https://znanje.hr/") for k, v in d.items() if k == 'page' and v == 2)
             d.update((k, "https://knjiga.hr/") for k, v in d.items() if k == 'page' and v == 5)
+            d.update((k, "https://mozaik-knjiga.hr/") for k, v in d.items() if k == 'page' and v == 3)
 
         return render_template('index.html', lista=change_list)  # base.html 1 master html, skeleton for other to inherit
 
@@ -365,7 +366,7 @@ def check_database(task_author, task_title):
     book_exists = db.session.query(Books.id).filter(Books.title == task_title).all()
     result = ""
     if task_title and task_author:
-        result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id
+        result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id,offers.date_added
                     FROM offers
                     INNER JOIN books ON offers.book_id=books.id Where books.id IN (SELECT b.id
         FROM books b
@@ -377,7 +378,7 @@ def check_database(task_author, task_title):
         pass
 
     elif not task_title:
-        result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id
+        result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id,offers.date_added
             FROM offers
             INNER JOIN books ON offers.book_id=books.id Where books.id IN (SELECT b.id
 FROM books b
@@ -386,17 +387,18 @@ JOIN authors a ON ba.author_id = a.id
 WHERE a.name LIKE '%{task_author}%');""")
 
     elif not task_author:
-        result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id
+        result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id, offers.date_added
             FROM offers
             INNER JOIN books ON offers.book_id=books.id Where books.id IN (SELECT b.id
 FROM books b
 JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
 WHERE b.title LIKE '{task_title}%');""")
-
     if result:
         offers = result.mappings().all()
         for offer in offers:
+            if datetime.strptime(offer.date_added.split(' ')[0], '%Y-%m-%d') <= (datetime.now()-timedelta(weeks=1)): # 100 weeks is set for testing
+                continue
             book_full_name = db.session.query(Books.title).filter(Books.id == offer['book_id']).first()
             authors_for_book = db.session.execute(f"""SELECT authors.name
     FROM authors
@@ -433,7 +435,7 @@ def live_scraping(task_author, task_title):
         for item in mozaik_list:
             item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'mozaik.jpg')
 
-    new_lista =  knjiga_list + znanje_list + mozaik_list
+    new_lista =  mozaik_list + knjiga_list + znanje_list
     #new_lista =[{'price': '88,00 kn', 'author': ['Ivan Kušan'], 'title': 'Ljubav ili smrt', 'link': 'https://znanje.hr/product/ljubav-ili-smrt/201846', 'page': 2, 'page_logo': 'static\\logos\\znanje.jpg'},  {'price':'35,00 kn', 'author': ['Ivan Kušan'], 'title': 'Koko i duhovi', 'link': 'https://knjiga.hr/koko-i-duhovi-ivan-kusan-1-5', 'page': 5, 'page_logo': 'static\\logos\\knjiga.png'}]
     @after_this_request
     def save_to_db_after_scraping(response):
