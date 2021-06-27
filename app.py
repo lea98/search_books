@@ -170,7 +170,6 @@ def load_user(id):
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(min=3, max=15)])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=3, max=50)])
-    remember = BooleanField('remember me')
 
 
 class RegisterForm(FlaskForm):
@@ -187,8 +186,7 @@ def login():
         user = Users.query.filter_by(username=form.username.data).first()
         if user:
             if check_password_hash(user.password, form.password.data):
-                print(form.remember.data)
-                login_user(user, remember=True)
+                login_user(user, remember=True) # maybe add option
                 next = flask.request.args.get('next')
                 if not is_safe_url(next):
                     return flask.abort(400)
