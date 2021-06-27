@@ -372,7 +372,7 @@ def check_database(task_author, task_title):
         FROM books b
         JOIN book_authors ba ON b.id = ba.book_id
         JOIN authors a ON ba.author_id = a.id
-        WHERE a.name LIKE "%{task_author}%" AND b.title LIKE '{task_title}%');""")
+        WHERE a.name LIKE "%{task_author.replace("'","''")}%" AND b.title LIKE '{task_title.replace("'","''")}%');""")
 
     if not task_title and not task_author:
         pass
@@ -384,7 +384,7 @@ def check_database(task_author, task_title):
 FROM books b
 JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
-WHERE a.name LIKE '%{task_author}%');""")
+WHERE a.name LIKE '%{task_author.replace("'","''")}%');""")
 
     elif not task_author:
         result = db.session.execute(f"""SELECT offers.link, offers.price, offers.book_id, offers.pages_id, offers.date_added
@@ -393,7 +393,7 @@ WHERE a.name LIKE '%{task_author}%');""")
 FROM books b
 JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
-WHERE b.title LIKE '{task_title}%');""")
+WHERE b.title LIKE '{task_title.replace("'","''")}%');""")
     if result:
         offers = result.mappings().all()
         for offer in offers: # malo sam zezla s typom kod spremanja
@@ -442,19 +442,18 @@ def live_scraping(task_author, task_title):
     def save_to_db_after_scraping(response):
         for item in new_lista:
             exists_in = check_if_exists_in_table(item)
-            titles = item['title'].replace("'", '"')
+            titles = item['title'].replace("'", "''")
             if not exists_in:
                 book_id = db.session.execute(f"""insert into books values (DEFAULT,'{titles}') RETURNING id;""")
                 book_id_num = book_id.first()[0]
                 for auth in item['author']:
                     auth_is_there_list = db.session.execute(
-                        f"""select id from authors where name = '{auth}';""").fetchone()
+                        f"""select id from authors where name = '{auth.replace("'","''")}';""").fetchone()
                     if not auth_is_there_list:
                         auth_id_num = \
-                        db.session.execute(f"""insert into authors values (DEFAULT,'{auth}') RETURNING id;""").first()[0]
+                        db.session.execute(f"""insert into authors values (DEFAULT,'{auth.replace("'","''")}') RETURNING id;""").first()[0]
                     else:
                         auth_id_num = auth_is_there_list[0]
-                    print(auth_id_num)
                     db.session.execute(f"""insert into book_authors values ({book_id_num},{auth_id_num});""")
             else:
                 book_id_num = exists_in
@@ -470,7 +469,8 @@ def live_scraping(task_author, task_title):
 
 
 def check_if_exists_in_table(item):
-    all_books_with_that_name = db.session.execute(f"""select id from books where title = '{item['title']}'""")
+    title_escape_quote = item['title'].replace("'","''")
+    all_books_with_that_name = db.session.execute(f"""select id from books where title = '{title_escape_quote}'""")
     for book_id in list(all_books_with_that_name):
         book_authors_match = db.session.execute(f"""select author_id from book_authors where book_id = {book_id[0]}""")
         for author_name in list(book_authors_match):
