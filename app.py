@@ -372,7 +372,7 @@ def check_database(task_author, task_title):
         FROM books b
         JOIN book_authors ba ON b.id = ba.book_id
         JOIN authors a ON ba.author_id = a.id
-        WHERE a.name LIKE "%{task_author.replace("'","''")}%" AND b.title LIKE '{task_title.replace("'","''")}%');""")
+        WHERE a.name LIKE '%{task_author.replace("'","''")}%' AND b.title LIKE '{task_title.replace("'","''")}%');""")
 
     if not task_title and not task_author:
         pass
