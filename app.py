@@ -19,6 +19,8 @@ from beautifulsoup_bookstores.znanje import znanje
 # from bookstores.eurospanbookstore import eurospanbookstore
 from helpers.general import match_author
 from selenium_bookstores.knjiga import knjiga
+from selenium_bookstores.mozaik import mozaik
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, TextAreaField, FileField, MultipleFileField
@@ -35,13 +37,17 @@ UPLOADS_FOLDER =  os.path.join('static', 'uploads')
 app = Flask(__name__)  # setup app, name referencing this file
 app.config['SECRET_KEY'] = 'd64938c6ccdb42fcafaa7ff467f309bd'
 bootstrap = Bootstrap(app)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test3.db'
-SQLALCHEMY_DATABASE_URI = 'postgresql://gcxuwyueeneoir:80548384a968ac1aa1ec2d9f130377acbf66bdad629710b82520660091304ca0@ec2-54-73-68-39.eu-west-1.compute.amazonaws.com:5432/d2a4rk92i3odau'
-#DATABASE_URL = os.environ.get('DATABASE_URL')
+# LOCAL TESTING
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookoffers.db'
+# SQLALCHEMY_BINDS = {
+#     'sqlite:///oglasnik': "oglasnik.db",
+# }
 
-#SQLALCHEMY_DATABASE_URI = DATABASE_URL
+DATABASE_URL = os.environ.get('DATABASE_URL')
+HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL')
+SQLALCHEMY_DATABASE_URI = DATABASE_URL
 SQLALCHEMY_BINDS = {
-    'oglasnik': 'postgresql://okmpaacdfmhebo:0cc7666e2657df23b376842b721ed56cb4e4a548da5711038c74d7a4ca18e86b@ec2-34-254-69-72.eu-west-1.compute.amazonaws.com:5432/d5cjljr3skt7rm',
+    'oglasnik': HEROKU_POSTGRESQL_CHARCOAL_URL,
 }
 
 app.config['UPLOAD_FOLDER'] = LOGOS_FOLDER
@@ -421,7 +427,13 @@ def live_scraping(task_author, task_title):
         for item in knjiga_list:
             item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'knjiga.png')
 
-    new_lista =  knjiga_list + znanje_list
+    mozaik_list = mozaik(task_title, task_author)
+    mozaik_list = match_author(mozaik_list, task_author, task_title)
+    if mozaik_list:
+        for item in mozaik_list:
+            item['page_logo']=os.path.join(app.config['UPLOAD_FOLDER'], 'mozaik.jpg')
+
+    new_lista =  knjiga_list + znanje_list + mozaik_list
     #new_lista =[{'price': '88,00 kn', 'author': ['Ivan Kušan'], 'title': 'Ljubav ili smrt', 'link': 'https://znanje.hr/product/ljubav-ili-smrt/201846', 'page': 2, 'page_logo': 'static\\logos\\znanje.jpg'},  {'price':'35,00 kn', 'author': ['Ivan Kušan'], 'title': 'Koko i duhovi', 'link': 'https://knjiga.hr/koko-i-duhovi-ivan-kusan-1-5', 'page': 5, 'page_logo': 'static\\logos\\knjiga.png'}]
     @after_this_request
     def save_to_db_after_scraping(response):
