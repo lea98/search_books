@@ -35,7 +35,7 @@ LOGOS_FOLDER = os.path.join('static', 'logos')
 UPLOADS_FOLDER =  os.path.join('static', 'uploads')
 
 app = Flask(__name__)  # setup app, name referencing this file
-app.config['SECRET_KEY'] = 'd64938c6ccdb42fcafaa7ff467f309bd'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 bootstrap = Bootstrap(app)
 # LOCAL TESTING
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookoffers.db'
@@ -43,8 +43,8 @@ bootstrap = Bootstrap(app)
 #     'sqlite:///oglasnik': "oglasnik.db",
 # }
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL')
+DATABASE_URL = os.environ.get('DATABASE_URL').replace('postgres','postgresql')
+HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL').replace('postgres','postgresql')
 SQLALCHEMY_DATABASE_URI = DATABASE_URL
 SQLALCHEMY_BINDS = {
     'oglasnik': HEROKU_POSTGRESQL_CHARCOAL_URL,
