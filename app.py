@@ -23,9 +23,9 @@ from helpers.models import Users,db,Pages
 # # LOCAL TESTING
 # app.config[
 #     "SQLALCHEMY_DATABASE_URI"
-# ] = "postgresql://postgres:books2345@localhost/bookscraper"
+# ] = "postgresql://postgres:books1234@localhost/bookscraper"
 # app.config["SQLALCHEMY_BINDS"] = {
-#     "oglasnik": "postgresql://postgres:books2345@localhost/oglasnik"
+#     "oglasnik": "postgresql://postgres:books1234@localhost/oglasnik"
 # }
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
