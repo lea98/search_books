@@ -11,7 +11,7 @@ bp = Blueprint("handle_data", __name__)
 @bp.route("/handle_data", methods=["POST", "GET"])
 def handle_data():
     if request.method == "GET":
-        return redirect(url_for("scraper"))
+        return redirect(url_for("scraper.scraper"))
 
     task_title = request.form.get("title")
     task_author = request.form.get("author")
