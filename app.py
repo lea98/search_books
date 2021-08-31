@@ -30,7 +30,7 @@ from helpers.models import Users,db,Pages
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL').replace('postgres', 'postgresql')
-SQLALCHEMY_DATABASE_URI = DATABASE_URL
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config['SQLALCHEMY_BINDS'] = {
     'oglasnik': HEROKU_POSTGRESQL_CHARCOAL_URL,
 }
@@ -54,7 +54,6 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    print('wtd')
     db.session.commit()
     if not (db.session.execute("select count(*) from pages").first())[0]:
         page1 = Pages(id=1,link="https://www.barnesandnoble.com/",name="Barnes & Noble",image="barnesandnoble.jpg")
@@ -68,6 +67,7 @@ with app.app_context():
         db.session.add(page4)
         db.session.add(page5)
         db.session.commit()
+
 
 @login_manager.user_loader
 def load_user(id):
