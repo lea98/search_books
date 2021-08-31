@@ -28,7 +28,7 @@ def check_database(task_author, task_title):
         JOIN book_authors ba ON b.id = ba.book_id
         JOIN authors a ON ba.author_id = a.id
         WHERE a.name = :autname AND b.title = :title);""",
-            {"autname": task_author, "title": task_title},
+            {"autname": task_author, "title": task_title}
         )
 
     if not task_title and not task_author:
@@ -44,7 +44,7 @@ JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
 WHERE a.name = :autname
 );""",
-            {"autname": task_author},
+            {"autname": task_author}
         )
 
     elif not task_author:
@@ -56,7 +56,7 @@ FROM books b
 JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
 WHERE b.title = :title);""",
-            {"title": task_title},
+            {"title": task_title}
         )
     if result:
         offers = result.mappings().all()
@@ -78,7 +78,7 @@ WHERE b.title = :title);""",
     FROM authors
     JOIN book_authors ON authors.id = book_authors.author_id
     JOIN books ON book_authors.book_id = :bookid GROUP BY authors.name""",
-                {"bookid": offer["book_id"]},
+                {"bookid": offer["book_id"]}
             )
             authors_to_display = ", ".join(
                 i["name"] for i in (authors_for_book.mappings().all())
@@ -141,7 +141,7 @@ def live_scraping(task_author, task_title):
             if not exists_in:
                 book_id = db.session.execute(
                     """insert into books values (DEFAULT, :titles) RETURNING id;""",
-                    {"titles": titles},
+                    {"titles": titles}
                 )
                 book_id_num = book_id.first()[0]
                 for auth in item["author"]:
@@ -152,13 +152,13 @@ def live_scraping(task_author, task_title):
                     if not auth_is_there_list:
                         auth_id_num = db.session.execute(
                             """insert into authors values (DEFAULT,:autname) RETURNING id;""",
-                            {"autname": auth},
+                            {"autname": auth}
                         ).first()[0]
                     else:
                         auth_id_num = auth_is_there_list[0]
                     db.session.execute(
                         """insert into book_authors values (:bookid,:autid);""",
-                        {"bookid": book_id_num, "autid": auth_id_num},
+                        {"bookid": book_id_num, "autid": auth_id_num}
                     )
             else:
                 book_id_num = exists_in
@@ -178,7 +178,7 @@ def live_scraping(task_author, task_title):
                     "bookid": book_id_num,
                     "page": item["page"],
                     "dateadd": datetime.utcnow(),
-                },
+                }
             )
 
             db.session.commit()
@@ -195,12 +195,12 @@ def check_if_exists_in_table(item):
     for book_id in list(all_books_with_that_name):
         book_authors_match = db.session.execute(
             "select author_id from book_authors where book_id = :bookid",
-            {"bookid": book_id[0]},
+            {"bookid": book_id[0]}
         )
         for author_name in list(book_authors_match):
             authors_match = db.session.execute(
                 "select name from authors where id = :autname",
-                {"autname": author_name[0]},
+                {"autname": author_name[0]}
             )
             if not list(authors_match)[0][0] in item["author"]:
                 break
