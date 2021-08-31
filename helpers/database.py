@@ -12,6 +12,9 @@ from selenium_bookstores.knjiga import knjiga
 from selenium_bookstores.mozaik import mozaik
 
 
+
+
+
 def check_database(task_author, task_title):
     new_lista = []
     book_exists = db.session.query(Books.id).filter(Books.title == task_title).all()
