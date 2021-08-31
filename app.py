@@ -18,20 +18,20 @@ app = Flask(__name__)  # setup app, name referencing this file
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 bootstrap = Bootstrap(app)
 
-# LOCAL TESTING
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:books2345@localhost/bookscraper"
-app.config["SQLALCHEMY_BINDS"] = {
-    "oglasnik": "postgresql://postgres:books2345@localhost/oglasnik"
-}
-
-# DATABASE_URL = os.environ.get('DATABASE_URL').replace('postgres', 'postgresql')
-# HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL').replace('postgres', 'postgresql')
-# SQLALCHEMY_DATABASE_URI = DATABASE_URL
-# app.config['SQLALCHEMY_BINDS'] = {
-#     'oglasnik': HEROKU_POSTGRESQL_CHARCOAL_URL,
+# # LOCAL TESTING
+# app.config[
+#     "SQLALCHEMY_DATABASE_URI"
+# ] = "postgresql://postgres:books2345@localhost/bookscraper"
+# app.config["SQLALCHEMY_BINDS"] = {
+#     "oglasnik": "postgresql://postgres:books2345@localhost/oglasnik"
 # }
+
+DATABASE_URL = os.environ.get('DATABASE_URL').replace('postgres', 'postgresql')
+HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL').replace('postgres', 'postgresql')
+SQLALCHEMY_DATABASE_URI = DATABASE_URL
+app.config['SQLALCHEMY_BINDS'] = {
+    'oglasnik': HEROKU_POSTGRESQL_CHARCOAL_URL,
+}
 
 app.config["UPLOAD_FOLDER"] = LOGOS_FOLDER
 
