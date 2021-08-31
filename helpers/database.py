@@ -139,24 +139,24 @@ def live_scraping(task_author, task_title):
             exists_in = check_if_exists_in_table(item)
             if not exists_in:
                 book_id = db.session.execute(
-                    """insert into books values (DEFAULT, :titles) RETURNING id;""",
-                    {"titles": item["title"][0]}
+                    "insert into books values (DEFAULT, :titles) RETURNING id;",
+                    {"titles": item["title"]}
                 )
                 book_id_num = book_id.first()[0]
                 for auth in item["author"]:
                     auth_is_there_list = db.session.execute(
-                        """select id from authors where name = :autname;""",
+                        "select id from authors where name = :autname;",
                         {"autname": auth}
                     ).fetchone()
                     if not auth_is_there_list:
                         auth_id_num = db.session.execute(
-                            """insert into authors values (DEFAULT,:autname) RETURNING id;""",
+                            "insert into authors values (DEFAULT,:autname) RETURNING id;",
                             {"autname": auth}
                         ).first()[0]
                     else:
                         auth_id_num = auth_is_there_list[0]
                     db.session.execute(
-                        """insert into book_authors values (:bookid,:autid);""",
+                        "insert into book_authors values (:bookid,:autid);",
                         {"bookid": book_id_num, "autid": auth_id_num}
                     )
             else:
