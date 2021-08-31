@@ -137,17 +137,16 @@ def live_scraping(task_author, task_title):
     def save_to_db_after_scraping(response):
         for item in new_lista:
             exists_in = check_if_exists_in_table(item)
-            titles = item["title"].replace("'", "''")
             if not exists_in:
                 book_id = db.session.execute(
                     """insert into books values (DEFAULT, :titles) RETURNING id;""",
-                    {"titles": titles}
+                    {"titles": item["title"]}
                 )
                 book_id_num = book_id.first()[0]
                 for auth in item["author"]:
                     auth_is_there_list = db.session.execute(
                         """select id from authors where name = :autname;""",
-                        {"autname": auth},
+                        {"autname": auth}
                     ).fetchone()
                     if not auth_is_there_list:
                         auth_id_num = db.session.execute(
