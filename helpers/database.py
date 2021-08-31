@@ -1,6 +1,5 @@
 import os
 
-
 from datetime import datetime, timedelta
 
 from flask import after_this_request, current_app
@@ -10,9 +9,6 @@ from helpers.general import match_author
 from helpers.models import Books, Pages, db
 from selenium_bookstores.knjiga import knjiga
 from selenium_bookstores.mozaik import mozaik
-
-
-
 
 
 def check_database(task_author, task_title):
@@ -66,7 +62,7 @@ WHERE b.title = :title);""",
                 if isinstance(offer.date_added, str)
                 else offer.date_added
             )  # fix
-            if check_date <= (datetime.now() - timedelta(weeks=1)):
+            if check_date <= (datetime.now() - timedelta(weeks=500)):
                 continue
             book_full_name = (
                 db.session.query(Books.title)
@@ -138,7 +134,7 @@ def live_scraping(task_author, task_title):
         for item in new_lista:
             exists_in = check_if_exists_in_table(item)
             if not exists_in:
-                book_id = db.session.execute("insert into books (title) values (:title) RETURNING id;",{'title':item["title"]})
+                book_id = db.session.execute("insert into books values (DEFAULT,:titles) RETURNING id;",{'titles':item["title"]})
                 book_id_num = book_id.first()[0]
                 for auth in item["author"]:
                     auth_is_there_list = db.session.execute(
@@ -146,7 +142,7 @@ def live_scraping(task_author, task_title):
                         {"autname": auth}
                     ).fetchone()
                     if not auth_is_there_list:
-                        auth_id_num = db.session.execute("insert into authors (name) values (:auth) RETURNING id;",{'auth':auth}).first()[0]
+                        auth_id_num = db.session.execute("insert into authors values (DEFAULT,:authname) RETURNING id;",{'authname':auth}).first()[0]
                     else:
                         auth_id_num = auth_is_there_list[0]
                     db.session.execute(

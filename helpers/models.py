@@ -1,8 +1,9 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-db = SQLAlchemy()
 
+
+db = SQLAlchemy()
 
 
 book_authors = db.Table(
@@ -15,7 +16,8 @@ book_authors = db.Table(
 class Authors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
-
+    def __repr__(self):
+        return '<Authors %r>' % self.id
 
 class Books(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,7 +26,8 @@ class Books(db.Model):
         "Authors", secondary=book_authors, backref=db.backref("auth", lazy="dynamic")
     )
     offer = db.relationship("Offers", backref=db.backref("off"))
-
+    def __repr__(self):
+        return '<Books %r>' % self.id
 
 class Offers(db.Model):
     link = db.Column(db.String(200), primary_key=True)
@@ -34,7 +37,7 @@ class Offers(db.Model):
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Offers %r>" % self.id
+        return "<Offers %r>" % self.link
 
 
 class Pages(db.Model):
@@ -70,5 +73,9 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(30))
     password = db.Column(db.String(120))
     ogl = db.relationship("Oglasi", backref=db.backref("ogl_user"))
+
+    def __repr__(self):
+        return '<Users %r>' % self.id
+
 
 

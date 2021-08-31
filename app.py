@@ -7,16 +7,18 @@ from flask_login import (
 from flask_bootstrap import Bootstrap
 from flask_uploads import configure_uploads, IMAGES, UploadSet
 
-from helpers.models import Users,Pages
 from views import blueprints
-from helpers.models import db
 
 LOGOS_FOLDER = os.path.join("static", "logos")
 UPLOADS_FOLDER = os.path.join("static", "uploads")
 
 app = Flask(__name__)  # setup app, name referencing this file
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 bootstrap = Bootstrap(app)
+
+from helpers.models import Users,db,Pages
 
 # # LOCAL TESTING
 # app.config[
@@ -41,13 +43,19 @@ configure_uploads(app, images)
 
 # app.config.from_object(__name__)
 
+for blue in blueprints:
+    app.register_blueprint(blue.bp)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
 db.init_app(app)
 
 with app.app_context():
-    # FOR SETTING UP FIRST TIME
     db.create_all()
+    print('wtd')
     db.session.commit()
-
     if not (db.session.execute("select count(*) from pages").first())[0]:
         page1 = Pages(id=1,link="https://www.barnesandnoble.com/",name="Barnes & Noble",image="barnesandnoble.jpg")
         page2 = Pages(id=2,link="https://znanje.hr/",name="Znanje",image="znanje.jpg")
@@ -60,14 +68,6 @@ with app.app_context():
         db.session.add(page4)
         db.session.add(page5)
         db.session.commit()
-
-for blue in blueprints:
-    app.register_blueprint(blue.bp)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
-
 
 @login_manager.user_loader
 def load_user(id):
