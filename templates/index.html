@@ -8,9 +8,9 @@
     <h1>Book Scraper</h1>
 
     <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
-        <form action="{{ url_for('handle_data') }}" method="post" class="justify-content-center">
-            <input type="text" name="author" id="author" placeholder="Author name" value={{author_name}}>
-            <input type="text" name="title" id="title" placeholder="Book title" value={{book_title}}>
+        <form action="{{ url_for('handle_data.handle_data') }}" method="post" class="justify-content-center">
+            <input type="text" name="author" id="author" placeholder="Author name" value="{{author_name}}">
+            <input type="text" name="title" id="title" placeholder="Book title" value="{{book_title}}">
 
             <input type="submit" name="submit_button" value="Check DB" class="btn btn-dark btn-md">
             {% if show_button %} <input type="submit" name="submit_button" value="Scrape" class="btn btn-dark btn-md">{%
