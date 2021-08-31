@@ -28,7 +28,7 @@ from helpers.models import Users,db,Pages
 #     "oglasnik": "postgresql://postgres:books1234@localhost/oglasnik"
 # }
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get('DATABASE_URL').replace('postgres', 'postgresql')
 HEROKU_POSTGRESQL_CHARCOAL_URL = os.environ.get('HEROKU_POSTGRESQL_CHARCOAL_URL').replace('postgres', 'postgresql')
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config['SQLALCHEMY_BINDS'] = {
