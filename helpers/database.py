@@ -140,7 +140,7 @@ def live_scraping(task_author, task_title):
             if not exists_in:
                 book_id = db.session.execute(
                     """insert into books values (DEFAULT, :titles) RETURNING id;""",
-                    {"titles": item["title"]}
+                    {"titles": item["title"][0]}
                 )
                 book_id_num = book_id.first()[0]
                 for auth in item["author"]:
