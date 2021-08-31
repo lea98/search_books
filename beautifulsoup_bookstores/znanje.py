@@ -29,7 +29,6 @@ def znanje(auth_name, auth_title):
 
     time.sleep(1)
     soup = BeautifulSoup(page.content, "html.parser")
-    print(soup)
 
     # data = soup.findAll('div', attrs={'class','product-card'})
     price = soup.findAll("h4", attrs={"class", "product-price"})
