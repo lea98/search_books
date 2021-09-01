@@ -22,10 +22,10 @@ def knjiga(task_cont, task_title):
     options.add_argument("--no-sandbox")
     options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 
-    browser = webdriver.Chrome(
+    driver = webdriver.Chrome(
         executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options
     )
-    browser.minimize_window()
+    driver.minimize_window()
     # --| Parse or automation
     if task_cont and task_title:
         to_url = (task_cont + " " + task_title).replace(" ", "+")
@@ -34,9 +34,9 @@ def knjiga(task_cont, task_title):
     else:
         to_url = task_title.replace(" ", "+")
     url = f"https://knjiga.hr/?s={to_url}&post_type=product"
-    browser.get(url)
-    browser.implicitly_wait(1)
-    soup = BeautifulSoup(browser.page_source, "lxml")
+    driver.get(url)
+    driver.implicitly_wait(1)
+    soup = BeautifulSoup(driver.page_source, "lxml")
     price = soup.findAll("span", attrs={"class", "woocommerce-Price-amount amount"})
     title_meta = soup.findAll("h2", attrs={"class", "woocommerce-loop-product__title"})
     authors_meta = soup.findAll("div", attrs={"class", "author"})
@@ -58,5 +58,5 @@ def knjiga(task_cont, task_title):
                 "page": 5,
             }
         )
-    browser.quit()
+    driver.quit()
     return lista
