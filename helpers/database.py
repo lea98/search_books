@@ -128,7 +128,6 @@ def live_scraping(task_author, task_title):
 
     new_lista = mozaik_list + knjiga_list + znanje_list
 
-    # new_lista =[{'price': '88,00 kn', 'author': ['Ivan Kušan'], 'title': 'Ljubav ili smrt', 'link': 'https://znanje.hr/product/ljubav-ili-smrt/201846', 'page': 2, 'page_logo': 'static\\logos\\znanje.jpg'},  {'price':'35,00 kn', 'author': ['Ivan Kušan'], 'title': 'Koko i duhovi', 'link': 'https://knjiga.hr/koko-i-duhovi-ivan-kusan-1-5', 'page': 5, 'page_logo': 'static\\logos\\knjiga.png'}]
     @after_this_request
     def save_to_db_after_scraping(response):
         for item in new_lista:
